@@ -27,6 +27,7 @@ app.use(currentUserRouter);
 app.use(signInRouter);
 app.use(signOutRouter);
 app.use(signUpRouter);
+app.use(signOutRouter);
 
 app.all("*", async (req, res) => {
   throw new NotFoundError();
@@ -35,6 +36,11 @@ app.all("*", async (req, res) => {
 app.use(errorHandler);
 
 const start = async () => {
+  if (!process.env.JWT_KEY) {
+    throw new Error(
+      "JWT needs to be defined. Check the variable is set in Kubernetes."
+    );
+  }
   try {
     await mongoose.connect("mongodb://auth-mongo-srv:27017/auth", {
       useNewUrlParser: true,
