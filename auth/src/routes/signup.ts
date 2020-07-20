@@ -9,7 +9,7 @@ import { validateRequest } from "../middlewares/validate-request";
 const router = express.Router();
 
 router.post(
-  "/api/v1/users/signUp",
+  "/api/v1/users/signup",
   [
     body("email").isEmail().withMessage("Email must be valid"),
     body("password")
