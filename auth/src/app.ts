@@ -18,10 +18,12 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: true,
+    // Only displays cookie to HTTPS requests
+    secure: process.env.NODE_ENV !== "test",
   })
 );
 
+app.use(signOutRouter);
 app.use(currentUserRouter);
 app.use(signInRouter);
 app.use(signUpRouter);
