@@ -12,7 +12,7 @@ export default () => {
   const { email, password } = userCreds;
 
   const { doRequest, errors } = useRequest({
-    url: "/api/v1/users/signup",
+    url: "/api/v1/users/signin",
     method: "post",
     body: {
       email,
@@ -36,7 +36,7 @@ export default () => {
   return (
     <div className='container' style={{ margin: "30px auto" }}>
       <form onSubmit={onSubmit}>
-        <h1 className='sign-up-header'>Sign Up</h1>
+        <h1 className='sign-up-header'>Sign In</h1>
         <div className='form-group'>
           <label>Email address</label>
           <input
@@ -57,7 +57,7 @@ export default () => {
           />
         </div>
         {errors}
-        <button className='btn-primary'>Sign Up</button>
+        <button className='btn-primary'>Sign In</button>
       </form>
     </div>
   );
