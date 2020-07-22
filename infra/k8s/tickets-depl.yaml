@@ -17,11 +17,16 @@ spec:
           image: 0320629/tickets
           # Tickets pod will handle auth on its own, so we need to keep the JWT Key
           env:
+            - name: MONGO_URI
+              # //SERVICE-NAME:PORT/DB-NAME
+              # This is safe to publish; there are no user creds and needs access to our cluster
+              value: "mongodb://tickets-mongo-srv:27017/tickets"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
+
 ---
 # Create clusterIP service
 apiVersion: v1

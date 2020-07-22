@@ -16,6 +16,10 @@ spec:
         - name: auth
           image: 0320629/auth
           env:
+            - name: MONGO_URI
+              # //SERVICE-NAME:PORT/DB-NAME
+              # This is safe to publish; there are no user creds and needs access to our cluster
+              value: "mongodb://auth-mongo-srv:27017/auth"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
