@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import request from "supertest";
 
 import { app } from "../app";
-import { signInRouter } from "../routes/signin";
 
 declare global {
   namespace NodeJS {
