@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
 
 import useRequest from "../../hooks/request-hook";
 
-export default () => {
+export default ({ currentUser }) => {
   const [userCreds, setCreds] = useState({
     email: "",
     password: "",
   });
 
   const { email, password } = userCreds;
+
+  useEffect(() => {
+    if (currentUser) Router.push("/");
+  }, [currentUser]);
 
   const { doRequest, errors } = useRequest({
     url: "/api/v1/users/signin",
