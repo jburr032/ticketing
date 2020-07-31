@@ -4,7 +4,11 @@ import { Ticket } from "../../models/ticket.model";
 import { Order, OrderStatus } from "../../models/order.model";
 import { app } from "../../app";
 
-const createTicket = async (ticket: { title: string; price: number }) => {
+const createTicket = async (ticket: {
+  id: string;
+  title: string;
+  price: number;
+}) => {
   const returnedTicket = Ticket.build(ticket);
   await returnedTicket.save();
 
@@ -13,9 +17,21 @@ const createTicket = async (ticket: { title: string; price: number }) => {
 
 it("Fetches orders for a particular user", async () => {
   // Create three tickets
-  const ticket1 = await createTicket({ title: "Concert 1", price: 10 });
-  const ticket2 = await createTicket({ title: "Concert 2", price: 30 });
-  const ticket3 = await createTicket({ title: "Concert 3", price: 50 });
+  const ticket1 = await createTicket({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert 1",
+    price: 10,
+  });
+  const ticket2 = await createTicket({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert 2",
+    price: 30,
+  });
+  const ticket3 = await createTicket({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert 3",
+    price: 50,
+  });
 
   // Create one order as user #1
   await request(app)
@@ -54,7 +70,11 @@ it("Fetches orders for a particular user", async () => {
 });
 
 it("Checks that a user cannot access another user's orders", async () => {
-  const ticket1 = await createTicket({ title: "Concert 1", price: 10 });
+  const ticket1 = await createTicket({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert 1",
+    price: 10,
+  });
 
   // Create one order as user #1
   const cookieUser1 = global.signIn();

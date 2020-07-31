@@ -3,13 +3,12 @@ import { body } from "express-validator";
 import mongoose from "mongoose";
 import {
   requireAuth,
-  NotAuthorizedError,
   validateRequest,
   NotFoundError,
   OrderStatus,
   BadRequestError,
-  Subjects,
 } from "@parkerco/common";
+
 import { Ticket } from "../models/ticket.model";
 import { Order } from "../models/order.model";
 import { natsWrapper } from "../nats-wrapper";
@@ -17,7 +16,7 @@ import { OrderCreatedPublisher } from "../events/publishers/order-created-publis
 
 const router = express.Router();
 
-const EXPIRATON_WINDOW_SECONDS = 15 * 60;
+const EXPIRATON_WINDOW_SECONDS = 1 * 60;
 
 router.post(
   "/api/v1/orders",
@@ -51,7 +50,7 @@ router.post(
 
     const order = Order.build({
       userId: req.currentUser!.id,
-      status: OrderStatus.Completed,
+      status: OrderStatus.Created,
       expiresAt: expiration,
       ticket,
     });
@@ -61,6 +60,7 @@ router.post(
     // Publish OrderCreated event
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       status: order.status,
       userId: order.userId,
       expiresAt: order.expiresAt.toISOString(),

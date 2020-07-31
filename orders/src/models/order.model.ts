@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { OrderStatus } from "@parkerco/common";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
+
 import { TicketDoc } from "./ticket.model";
 
 export { OrderStatus };
@@ -12,6 +14,7 @@ interface OrderAttrs {
 }
 interface OrderDoc extends mongoose.Document {
   userId: string;
+  version: number;
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
@@ -51,6 +54,8 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+orderSchema.set("versionKey", "version");
+orderSchema.plugin(updateIfCurrentPlugin);
 // Assign static method to ticketSchema instance
 // Static method is a wrapper to enforce types
 orderSchema.statics.build = (orderAttrs: OrderAttrs) => new Order(orderAttrs);

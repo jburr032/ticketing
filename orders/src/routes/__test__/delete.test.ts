@@ -4,6 +4,7 @@ import { app } from "../../app";
 import { Ticket } from "../../models/ticket.model";
 import { OrderStatus } from "@parkerco/common";
 import { natsWrapper } from "../../nats-wrapper";
+import mongoose from "mongoose";
 
 it("Updates order status to cancelled", async () => {
   // Persist a cookie
@@ -11,6 +12,7 @@ it("Updates order status to cancelled", async () => {
 
   // Create a ticket
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "Concert 1",
     price: 100,
   });
@@ -36,6 +38,7 @@ it("Updates order status to cancelled", async () => {
 it("Returns 401 if user does not own the order", async () => {
   // Create a ticket
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "Concert 1",
     price: 100,
   });
@@ -62,6 +65,7 @@ it("Check cancelled event was published", async () => {
 
   // Create a ticket
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "Concert 1",
     price: 100,
   });

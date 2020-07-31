@@ -15,7 +15,11 @@ it("Returns 404 if ticket does not exist", async () => {
 });
 
 it("Returns 400 if ticket is already reserved", async () => {
-  const ticket = Ticket.build({ title: "Concert", price: 100 });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert",
+    price: 100,
+  });
   await ticket.save();
 
   const order = Order.build({
@@ -35,7 +39,11 @@ it("Returns 400 if ticket is already reserved", async () => {
 });
 
 it("Returns 201 if valid credentials are submitted", async () => {
-  const ticket = Ticket.build({ title: "Concert", price: 100 });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert",
+    price: 100,
+  });
   await ticket.save();
 
   const ticketOrder = await request(app)
@@ -46,7 +54,11 @@ it("Returns 201 if valid credentials are submitted", async () => {
 });
 
 it("Emits published order created event", async () => {
-  const ticket = Ticket.build({ title: "Concert", price: 100 });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert",
+    price: 100,
+  });
   await ticket.save();
 
   const ticketOrder = await request(app)

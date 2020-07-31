@@ -7,7 +7,11 @@ import { Ticket } from "../../models/ticket.model";
 it("Fetches a user's order with order ID", async () => {
   const cookie = global.signIn();
   // Create a ticket
-  const ticket = Ticket.build({ title: "Concert", price: 100 });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert",
+    price: 100,
+  });
   await ticket.save();
 
   // Create an order
@@ -30,7 +34,11 @@ it("Fetches a user's order with order ID", async () => {
 it("Fetches a user's order with order ID", async () => {
   const cookie = global.signIn();
   // Create a ticket
-  const ticket = Ticket.build({ title: "Concert", price: 100 });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "Concert",
+    price: 100,
+  });
   await ticket.save();
 
   // Create an order
