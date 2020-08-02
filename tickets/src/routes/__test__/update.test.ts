@@ -1,6 +1,8 @@
 import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
+import { natsWrapper } from "../../nats-wrapper";
+import { Ticket } from "../../models/ticket.model";
 
 it("Returns a 404 if the provided ID does not exist", async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
@@ -102,4 +104,56 @@ it("Updates the ticket provided valid inputs", async () => {
 
   expect(ticket.body.title).toEqual("Fake");
   expect(ticket.body.price).toEqual(10);
+});
+
+it("Checks that the NATS publish callback of an event was successful", async () => {
+  const cookie = global.signIn();
+
+  const response = await request(app)
+    .post(`/api/v1/tickets`)
+    .set("Cookie", cookie)
+    .send({
+      title: "Fake Title",
+      price: 40.0,
+    })
+    .expect(201);
+
+  const validUpdateResponse = await request(app)
+    // Pass in the ticket ID from the response above
+    .put(`/api/v1/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: "Fake",
+      price: 10,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
+
+it("Checks that a ticket with a defined orderId (i.e. reserved ticket) cannot be updated", async () => {
+  const cookie = global.signIn();
+
+  const response = await request(app)
+    .post(`/api/v1/tickets`)
+    .set("Cookie", cookie)
+    .send({
+      title: "Fake Title",
+      price: 40.0,
+    })
+    .expect(201);
+
+  const ticket = await Ticket.findById(response.body.id);
+  ticket!.set({ orderId: mongoose.Types.ObjectId().toHexString() });
+  ticket!.save();
+
+  const validUpdateResponse = await request(app)
+    // Pass in the ticket ID from the response above
+    .put(`/api/v1/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: "Fake",
+      price: 10,
+    })
+    .expect(400);
 });

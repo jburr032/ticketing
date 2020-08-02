@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: 0320629/payments
+          # payments pod will handle auth on its own, so we need to keep the JWT Key
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: MONGO_URI
+              # //SERVICE-NAME:PORT/DB-NAME
+              # This is safe to publish; there are no user creds and needs access to our cluster
+              value: "mongodb://payments-mongo-srv:27017/payments"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: STRIPE_KEY
+
+---
+# Create clusterIP service
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-srv
+spec:
+  selector:
+    app: payments
+  ports:
+    - name: payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

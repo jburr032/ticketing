@@ -1,19 +1,20 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import request from "supertest";
+import jwt from "jsonwebtoken";
 
 import { app } from "../app";
 
 declare global {
   namespace NodeJS {
     interface Global {
-      signIn(): Promise<string[]>;
+      signIn(): string[];
     }
   }
 }
 
-let mongo: any;
+jest.mock("../nats-wrapper");
 
+let mongo: any;
 beforeAll(async () => {
   process.env.JWT_KEY = "asdfasdf";
 
@@ -27,6 +28,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (let collection of collections) {
@@ -39,15 +41,21 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signIn = async () => {
-  const response = await request(app)
-    .post("/api/v1/users/signup")
-    .send({
-      email: "test@test.com",
-      password: "password",
-    })
-    .expect(201);
+global.signIn = () => {
+  const payload = {
+    id: new mongoose.Types.ObjectId().toHexString(),
+    email: "test@test.com",
+  };
 
-  const cookie = response.get("Set-Cookie");
-  return cookie;
+  const token = jwt.sign(payload, process.env.JWT_KEY!);
+
+  // Build session object
+  const session = { jwt: token };
+
+  // Convert to JSON
+  const sessionJson = JSON.stringify(session);
+
+  const tokenBase64 = Buffer.from(sessionJson).toString("base64");
+
+  return [`express:sess=${tokenBase64}`];
 };

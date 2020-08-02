@@ -17,6 +17,14 @@ spec:
           image: 0320629/tickets
           # Tickets pod will handle auth on its own, so we need to keep the JWT Key
           env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
             - name: MONGO_URI
               # //SERVICE-NAME:PORT/DB-NAME
               # This is safe to publish; there are no user creds and needs access to our cluster
