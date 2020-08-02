@@ -5,7 +5,7 @@ import { app } from "./app";
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error(
-      "JWT needs to be defined. Check the variable is set in Kubernetes."
+      "JWT needs to be defined. Make sure you check the variable is set in Kubernetes."
     );
   }
 
