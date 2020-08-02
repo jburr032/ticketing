@@ -27,7 +27,7 @@ export class OrderCreatedListener extends Listener<OrderCreated> {
     await new TicketUpdatedPublisher(this.client).publish({
       id: fetchedTicket.id,
       version: fetchedTicket.version,
-      title: fetchedTicket.id,
+      title: fetchedTicket.title,
       price: fetchedTicket.price,
       userId: fetchedTicket.userId,
       orderId: fetchedTicket.orderId,
