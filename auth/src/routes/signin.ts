@@ -11,11 +11,11 @@ const router = express.Router();
 router.post(
   "/api/v1/users/signin",
   [
-    body("email").isEmail().withMessage("Email must be valid"),
+    body("email").isEmail().withMessage("Must provide a valid email"),
     body("password")
       .trim()
       .notEmpty()
-      .withMessage("You must supply a password"),
+      .withMessage("You must provide a password"),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -24,7 +24,7 @@ router.post(
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-      throw new BadRequestError("Invalid credentials");
+      throw new BadRequestError("Invalid credentials provided");
     }
 
     const passwordComparison = await PasswordHasher.comparePasswords(
@@ -33,7 +33,7 @@ router.post(
     );
 
     if (!passwordComparison) {
-      throw new BadRequestError("Invalid credentials");
+      throw new BadRequestError("Invalid credentials provided");
     }
 
     // Generate JWT
