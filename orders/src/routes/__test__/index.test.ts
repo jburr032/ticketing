@@ -61,6 +61,7 @@ it("Fetches orders for a particular user", async () => {
     .send()
     .expect(200);
 
+  console.log(response.body[0]);
   expect(response.body.length).toEqual(2);
   // Using response.body[0].ticket.id returns the same value
   // but the 'deep' equality compares the object keys

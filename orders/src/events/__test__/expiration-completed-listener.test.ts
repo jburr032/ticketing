@@ -45,5 +45,3 @@ it("Check that order status has been set to cancelled after receiving event", as
 
   expect(cancelledOrder!.status).toEqual(OrderStatus.Cancelled);
 });
-
-it("Check ");

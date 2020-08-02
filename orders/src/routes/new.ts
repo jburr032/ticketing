@@ -35,7 +35,6 @@ router.post(
     const ticket = await Ticket.findById(ticketId);
 
     if (!ticket) {
-      console.log(ticket);
       throw new NotFoundError();
     }
 

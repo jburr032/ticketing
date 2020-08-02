@@ -16,6 +16,7 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     }
 
     const { title, price } = data;
+
     updatedTicket.set({ title, price });
     await updatedTicket.save();
 
