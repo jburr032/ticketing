@@ -1,4 +1,4 @@
-# Ingress service
+# Ingress service for the production
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
