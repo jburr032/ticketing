@@ -4,18 +4,20 @@ import axios from "axios";
 export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
-  const doRequest = async () => {
+  const doRequest = async (props = {}) => {
     try {
-      const response = await axios[method](url, body);
+      setErrors(null);
+      const response = await axios[method](url, { ...body, ...props });
 
       if (onSuccess) {
-        onSuccess();
+        onSuccess(response.data);
       }
       return response.data;
     } catch (errs) {
       setErrors(
         <div className='alert alert-danger'>
-          <ul>
+          <h4>Ooops....</h4>
+          <ul className='my-0'>
             {errs.response.data.errors.map((err) => (
               <li key={err.message}>{err.message}</li>
             ))}
