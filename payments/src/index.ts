@@ -7,7 +7,7 @@ import { OrderCancelledListener } from "./events/listeners/order-cancelled-liste
 import { createChargeRouter } from "../src/routes/new";
 
 const start = async () => {
-  console.log("Starting...");
+  console.log("Starting service..");
   if (!process.env.JWT_KEY) {
     throw new Error(
       "JWT needs to be defined. Check the variable is set in Kubernetes."
