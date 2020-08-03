@@ -6,8 +6,7 @@ export default ({ req }) => {
     console.log("Rendered inside the server");
     // Configured axios url to make a call to the nginx-ingress pod within the nginx-ingress namespace
     return axios.create({
-      baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseURL: "http://www.gittix.shop/",
       headers: req.headers,
     });
   } else {
